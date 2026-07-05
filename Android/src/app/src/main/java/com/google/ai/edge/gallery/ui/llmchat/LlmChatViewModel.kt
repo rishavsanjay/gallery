@@ -150,7 +150,8 @@ open class LlmChatViewModelBase(
       }
 
       var firstRun = true
-      val start = System.currentTimeMillis()
+      val start = android.os.SystemClock.elapsedRealtime()
+      var timeToFirstTokenMs: Long = -1
 
       try {
         val resultListener: (String, Boolean, String?) -> Unit =
@@ -228,13 +229,32 @@ open class LlmChatViewModelBase(
                   )
                 }
 
+                if (firstRun && partialResult.isNotEmpty()) {
+                  timeToFirstTokenMs = android.os.SystemClock.elapsedRealtime() - start
+                }
+
                 // Incrementally update the streamed partial results.
-                val latencyMs: Long = if (done) System.currentTimeMillis() - start else -1
+                val latencyMs: Long = if (done) android.os.SystemClock.elapsedRealtime() - start else -1
+                var ttft: Float? = null
+                var decodeSpeed: Float? = null
+
+                if (done) {
+                  ttft = if (timeToFirstTokenMs > 0) timeToFirstTokenMs / 1000f else null
+                  val decodingTimeMs = (android.os.SystemClock.elapsedRealtime() - start) - timeToFirstTokenMs
+                  if (decodingTimeMs > 0) {
+                     // Heuristic approximation of output tokens.
+                     val approxTokens = (currentLastMessage?.let { if (it is ChatMessageText) it.content.length else 0 } ?: 0) / 4.0f
+                     decodeSpeed = (approxTokens / (decodingTimeMs / 1000f)).toFloat()
+                  }
+                }
+
                 if (partialResult.isNotEmpty() || wasLoading || done) {
                   updateLastTextMessageContentIncrementally(
                     model = model,
                     partialContent = partialResult,
                     latencyMs = latencyMs.toFloat(),
+                    timeToFirstToken = ttft,
+                    decodeSpeed = decodeSpeed,
                   )
                 }
               }

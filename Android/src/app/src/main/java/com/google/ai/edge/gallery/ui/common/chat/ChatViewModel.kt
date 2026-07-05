@@ -180,6 +180,9 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
     model: Model,
     partialContent: String,
     latencyMs: Float,
+    prefillSpeed: Float? = null,
+    decodeSpeed: Float? = null,
+    timeToFirstToken: Float? = null,
   ) {
     val newMessagesByModel = _uiState.value.messagesByModel.toMutableMap()
     val newMessages = newMessagesByModel[model.name]?.toMutableList() ?: mutableListOf()
@@ -194,6 +197,9 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
             latencyMs = latencyMs,
             accelerator = lastMessage.accelerator,
             hideSenderLabel = lastMessage.hideSenderLabel,
+            prefillSpeed = prefillSpeed ?: lastMessage.prefillSpeed,
+            decodeSpeed = decodeSpeed ?: lastMessage.decodeSpeed,
+            timeToFirstToken = timeToFirstToken ?: lastMessage.timeToFirstToken,
           )
         newMessages.removeAt(newMessages.size - 1)
         newMessages.add(newLastMessage)
