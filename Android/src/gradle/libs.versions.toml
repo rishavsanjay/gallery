@@ -1,4 +1,5 @@
 [versions]
+latex = "1.4.7-kt2.1.0"
 agp = "8.13.0"
 kotlin = "2.2.0"
 coreKtx = "1.15.0"
@@ -44,6 +45,7 @@ mcp = "0.8.0"
 ktor = "3.4.3"
 
 [libraries]
+latex-renderer = { group = "io.github.huarangmeng", name = "latex-renderer", version.ref = "latex" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

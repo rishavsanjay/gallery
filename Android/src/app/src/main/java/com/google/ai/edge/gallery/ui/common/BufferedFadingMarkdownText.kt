@@ -105,12 +105,12 @@ fun BufferedFadingMarkdownText(text: String, inProgress: Boolean, modifier: Modi
     // and BlendMode.Plus adds the colors, the transition appears as a smooth crossfade
     // without any intermediate darkening or color artifacts.
     SelectionContainer() {
-      MarkdownText(text = text1, modifier = Modifier.graphicsLayer { alpha = 1f - alpha2.value })
+      MixedMarkdownMathText(text = text1, modifier = Modifier.graphicsLayer { alpha = 1f - alpha2.value })
     }
 
     // LAYER 2: Overlay text.
     if (showOverlay) {
-      MarkdownText(
+      MixedMarkdownMathText(
         text = text2,
         modifier =
           // Ignore this layer in terms of accessibility semantics (won't be read by screen

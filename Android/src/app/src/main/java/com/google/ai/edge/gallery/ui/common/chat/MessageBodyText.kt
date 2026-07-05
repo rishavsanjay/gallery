@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.ai.edge.gallery.R
 import com.google.ai.edge.gallery.ui.common.BufferedFadingMarkdownText
+import com.google.ai.edge.gallery.ui.common.MixedMarkdownMathText
 import com.google.ai.edge.gallery.ui.common.MarkdownText
 
 /** Composable function to display the text content of a ChatMessageText. */
@@ -44,7 +45,7 @@ fun MessageBodyText(
 ) {
   if (message.side == ChatSide.USER) {
     LongPressCopyContainer(copyText = message.content, onCopyClicked = onCopyClicked) {
-      MarkdownText(
+      MixedMarkdownMathText(
         text = message.content,
         modifier = Modifier.padding(vertical = 12.dp).padding(horizontal = horizontalPadding),
         textColor = Color.White,

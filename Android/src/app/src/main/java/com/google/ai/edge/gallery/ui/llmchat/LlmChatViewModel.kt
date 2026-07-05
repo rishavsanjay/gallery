@@ -248,6 +248,9 @@ open class LlmChatViewModelBase(
                   }
                 }
 
+                if (firstRun && partialResult.isNotEmpty()) {
+                  ttft = if (timeToFirstTokenMs > 0) timeToFirstTokenMs / 1000f else null
+                }
                 if (partialResult.isNotEmpty() || wasLoading || done) {
                   updateLastTextMessageContentIncrementally(
                     model = model,

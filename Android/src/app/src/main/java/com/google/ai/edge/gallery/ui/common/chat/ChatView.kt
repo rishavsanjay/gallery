@@ -643,6 +643,9 @@ private fun deserializeProtoMessages(
           isMarkdown = protoMsg.isMarkdown,
           accelerator = protoMsg.accelerator,
           hideSenderLabel = protoMsg.hideSenderLabel,
+              prefillSpeed = if (protoMsg.hasPrefillSpeed()) protoMsg.prefillSpeed else null,
+              decodeSpeed = if (protoMsg.hasDecodeSpeed()) protoMsg.decodeSpeed else null,
+              timeToFirstToken = if (protoMsg.hasTimeToFirstToken()) protoMsg.timeToFirstToken else null,
         )
       "THINKING" ->
         ChatMessageThinking(
