@@ -433,30 +433,29 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
       val protoMessages = messagesSnapshot.mapNotNull { msg ->
         val builder = ChatMessageProto.newBuilder()
         when (msg) {
-          is ChatMessageText -> {
-            builder
-              .setMessageType("TEXT")
-              .setContent(msg.content)
-              .setSide(mapChatSide(msg.side))
-              .setLatencyMs(msg.latencyMs)
-              .setAccelerator(msg.accelerator)
-              .setHideSenderLabel(msg.hideSenderLabel)
-              .setIsMarkdown(msg.isMarkdown)
-          }
+	is ChatMessageText -> {
+  val msgBuilder =
+    builder
+      .setMessageType("TEXT")
+      .setContent(msg.content)
+      .setSide(mapChatSide(msg.side))
+      .setLatencyMs(msg.latencyMs)
+      .setIsMarkdown(msg.isMarkdown)
+      .setAccelerator(msg.accelerator)
+      .setHideSenderLabel(msg.hideSenderLabel)
+
+  msg.prefillSpeed?.let { msgBuilder.setPrefillSpeed(it) }
+  msg.decodeSpeed?.let { msgBuilder.setDecodeSpeed(it) }
+  msg.timeToFirstToken?.let { msgBuilder.setTimeToFirstToken(it) }
+}
           is ChatMessageThinking -> {
             builder
               .setMessageType("THINKING")
               .setContent(msg.content)
               .setSide(mapChatSide(msg.side))
-              .setInProgress(msg.inProgress)
-              .setAccelerator(msg.accelerator)
+                      .setAccelerator(msg.accelerator)
               .setHideSenderLabel(msg.hideSenderLabel)
 
-        if (msg is ChatMessageText) {
-          msg.prefillSpeed?.let { msgBuilder.setPrefillSpeed(it) }
-          msg.decodeSpeed?.let { msgBuilder.setDecodeSpeed(it) }
-          msg.timeToFirstToken?.let { msgBuilder.setTimeToFirstToken(it) }
-        }
           }
           is ChatMessageInfo -> {
             builder.setMessageType("INFO").setContent(msg.content).setSide(mapChatSide(msg.side))

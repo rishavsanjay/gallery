@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.ai.edge.gallery.ui.common.math.MessageChunk
 import com.google.ai.edge.gallery.ui.common.math.tokenizeMarkdownAndMath
-import huarangmeng.github.io.latex_renderer.LatexRenderer
+import com.hrm.latex.renderer.Latex
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -39,7 +39,7 @@ fun MixedMarkdownMathText(
                   linkColor = linkColor,
                   modifier = Modifier.padding(end = 4.dp, bottom = 4.dp)
                 )
-                is MessageChunk.Math -> LatexRenderer(
+                is MessageChunk.Math -> Latex(
                   latex = inlineChunk.latex,
                   modifier = Modifier.padding(end = 4.dp, bottom = 4.dp)
                 )
@@ -50,7 +50,7 @@ fun MixedMarkdownMathText(
         }
 
         // Render block math.
-        LatexRenderer(latex = chunk.latex, modifier = Modifier.padding(vertical = 8.dp))
+        Latex(latex = chunk.latex, modifier = Modifier.padding(vertical = 8.dp))
       } else {
         inlineAccumulator.add(chunk)
       }
@@ -67,7 +67,7 @@ fun MixedMarkdownMathText(
               linkColor = linkColor,
               modifier = Modifier.padding(end = 4.dp, bottom = 4.dp)
             )
-            is MessageChunk.Math -> LatexRenderer(
+            is MessageChunk.Math -> Latex(
               latex = inlineChunk.latex,
               modifier = Modifier.padding(end = 4.dp, bottom = 4.dp)
             )
