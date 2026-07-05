@@ -120,6 +120,9 @@ open class ChatMessageText(
   override val accelerator: String = "",
   override val hideSenderLabel: Boolean = false,
   var data: Any? = null,
+  var prefillSpeed: Float? = null,
+  var decodeSpeed: Float? = null,
+  var timeToFirstToken: Float? = null,
 ) :
   ChatMessage(
     type = ChatMessageType.TEXT,
@@ -139,6 +142,9 @@ open class ChatMessageText(
         llmBenchmarkResult = llmBenchmarkResult,
         hideSenderLabel = hideSenderLabel,
         data = data,
+        prefillSpeed = prefillSpeed,
+        decodeSpeed = decodeSpeed,
+        timeToFirstToken = timeToFirstToken,
       )
     return cloned
   }

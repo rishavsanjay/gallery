@@ -180,6 +180,9 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
     model: Model,
     partialContent: String,
     latencyMs: Float,
+    prefillSpeed: Float? = null,
+    decodeSpeed: Float? = null,
+    timeToFirstToken: Float? = null,
   ) {
     val newMessagesByModel = _uiState.value.messagesByModel.toMutableMap()
     val newMessages = newMessagesByModel[model.name]?.toMutableList() ?: mutableListOf()
@@ -194,6 +197,9 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
             latencyMs = latencyMs,
             accelerator = lastMessage.accelerator,
             hideSenderLabel = lastMessage.hideSenderLabel,
+            prefillSpeed = prefillSpeed ?: lastMessage.prefillSpeed,
+            decodeSpeed = decodeSpeed ?: lastMessage.decodeSpeed,
+            timeToFirstToken = timeToFirstToken ?: lastMessage.timeToFirstToken,
           )
         newMessages.removeAt(newMessages.size - 1)
         newMessages.add(newLastMessage)
@@ -427,24 +433,29 @@ abstract class ChatViewModel(val userDataDataStore: DataStore<UserData>? = null)
       val protoMessages = messagesSnapshot.mapNotNull { msg ->
         val builder = ChatMessageProto.newBuilder()
         when (msg) {
-          is ChatMessageText -> {
-            builder
-              .setMessageType("TEXT")
-              .setContent(msg.content)
-              .setSide(mapChatSide(msg.side))
-              .setLatencyMs(msg.latencyMs)
-              .setAccelerator(msg.accelerator)
-              .setHideSenderLabel(msg.hideSenderLabel)
-              .setIsMarkdown(msg.isMarkdown)
-          }
+	is ChatMessageText -> {
+  val msgBuilder =
+    builder
+      .setMessageType("TEXT")
+      .setContent(msg.content)
+      .setSide(mapChatSide(msg.side))
+      .setLatencyMs(msg.latencyMs)
+      .setIsMarkdown(msg.isMarkdown)
+      .setAccelerator(msg.accelerator)
+      .setHideSenderLabel(msg.hideSenderLabel)
+
+  msg.prefillSpeed?.let { msgBuilder.setPrefillSpeed(it) }
+  msg.decodeSpeed?.let { msgBuilder.setDecodeSpeed(it) }
+  msg.timeToFirstToken?.let { msgBuilder.setTimeToFirstToken(it) }
+}
           is ChatMessageThinking -> {
             builder
               .setMessageType("THINKING")
               .setContent(msg.content)
               .setSide(mapChatSide(msg.side))
-              .setInProgress(msg.inProgress)
-              .setAccelerator(msg.accelerator)
+                      .setAccelerator(msg.accelerator)
               .setHideSenderLabel(msg.hideSenderLabel)
+
           }
           is ChatMessageInfo -> {
             builder.setMessageType("INFO").setContent(msg.content).setSide(mapChatSide(msg.side))
